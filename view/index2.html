@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue进阶版</title>
+
+    <link rel="stylesheet" href="../assets/js/bootstrap/css/bootstrap.min.css">
+    <script src="../assets/js/jquery-3.2.1.js"></script>
+    <script src="../assets/js/bootstrap/js/bootstrap.js"></script>
+    <script src="../assets/js/vue.js"></script>
+
+    <link rel="stylesheet" href="../assets/css/index.css">
+
+</head>
+<body>
+<h3 class="clearfix page-title">
+    <a class="prev" href="index.html">上一篇：Vue基础用法</a>
+    <span>Vue进阶版</span>
+    <!--<a class="next" href="index2.html">下一篇：进阶版</a>-->
+</h3>
+<div class="step-bar">组件</div>
+<div class="example-box clearfix" id="app">
+    <div class="step">
+        <p>组件是可复用的 Vue 实例，且带有一个名字</p>
+        <p>
+            <button-counter></button-counter>
+        </p>
+        <p>一个组件的 data 选项必须是一个函数，因此每个实例可以维护一份被返回对象的独立的拷贝</p>
+        <p>
+            <button-counter></button-counter>
+            <button-counter></button-counter>
+            <button-counter></button-counter>
+        </p>
+        <pre>
+Vue.component('button-counter',{
+    data: function () {
+        return { count: 0}
+    },
+    template: '< button v-on:click="count++">点击了 {count} 次< /button>'
+});
+        </pre>
+        <p>这里有两种组件的注册类型：全局注册和局部注册。</p>
+        <p>该例子中使用的是全局注册。它在注册之后可以用在任何新创建的 Vue 根实例 (new Vue) 的模板中</p>
+    </div>
+    <div class="step">
+        <p>局部注册：</p>
+        <component-a></component-a>
+        <component-a></component-a>
+        <component-a></component-a>
+    </div>
+
+    <div class="step">
+        <p>通过prop向子组件传递数据：</p>
+        <p>
+            <alert-button title="按钮一"></alert-button>
+<pre id="pre-one">
+Vue.component('alert-button', {
+    props: ['title'],
+    template: '< button>{ title }< /button>'
+});
+</pre>
+        </p>
+        <p>
+            <button-item
+                    v-for="b in btns"
+                    :id="b.id"
+                    :title="b.title"
+                    :type="b.type"
+            ></button-item>
+        </p>
+
+        <hr>
+        <p>一个组件设计的属性太多的时候，我们让它变成接受一个单独的 post：</p>
+        <pre id="single-post"></pre>
+        <blog-post v-bind:post="post"></blog-post>
+    </div>
+    <div class="step">
+        <p>通过事件向父级组件发送消息</p>
+        <!--此处要注意，样式的写法遵循js中写法-->
+        <div :style="{fontSize: postFontSize +'em'}">
+            <blog-post v-bind:post="post" v-on:up-text="postFontSize += 0.2"
+                       v-on:down-text="postFontSize -= 0.2"></blog-post>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+    $(function () {
+        $("#single-post").text('<blog-post v-bind:post="post"></blog-post>');
+    })
+</script>
+
+<script>
+    // 全局组件
+    Vue.component('button-counter',{
+        data: function () {
+            return { count: 0}
+        },
+        template: '<button v-on:click="count++">点击了 {{count}} 次</button>'
+    });
+
+    // 局部组件
+    var ComponentA = {
+        data: function () {
+            return { age: 18}
+        },
+        template: '<span @click="age++">你{{age}}岁了</span>'
+    };
+
+    // 子组件prop传值
+    Vue.component('alert-button', {
+        props: ['title'],
+        template: '<button>{{ title }}</button>'
+    });
+
+    // 组件可以看做是一个独立的小空间
+    Vue.component('button-item', {
+        props: ['id','title','type'],
+        template: '<button :type="type" @click="showAlert(type)">{{ title }}{{id}}</button>',
+        methods: {
+            showAlert: function (type) {
+                alert(type)
+            }
+        }
+    });
+
+    // 一个组件设计的属性太多的时候，我们让它变成接受一个单独的 post
+    Vue.component('blog-post', {
+        props: ['post'],
+        template: '<div class="blog-post">\n' +
+            '<button style="font-size: 14px;" v-on:click="$emit(\'up-text\')">字体变大</button>'+
+            '<button style="font-size: 14px;" v-on:click="$emit(\'down-text\')">字体变小</button>'+
+        '<p>{{ post.title }}</p>\n' +
+        '<p>{{post.time}}</p>'+
+        '<div v-html="post.content"></div>\n' +
+        '</div>'
+    });
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            btns: [
+                {id: 1, title: '启动', type: 'one'},
+                {id: 2, title: '启动', type: 'two'},
+                {id: 3, title: '启动', type: 'three'},
+            ],
+            post: {
+                title: '测试标题',
+                time: '2018-08-01',
+                content: '<p style="color:red;">测试正文</p><span style="font-size:18px;">第二句话</span>'
+            },
+            postFontSize: 1
+        },
+        methods: {
+
+
+        },
+        components: {
+            'component-a': ComponentA
+        }
+    })
+</script>
+</body>
+</html>

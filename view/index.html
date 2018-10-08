@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue基础用法</title>
+
+    <link rel="stylesheet" href="../assets/js/bootstrap/css/bootstrap.min.css">
+    <script src="../assets/js/jquery-3.2.1.js"></script>
+    <script src="../assets/js/bootstrap/js/bootstrap.js"></script>
+    <script src="../assets/js/vue.js"></script>
+
+    <link rel="stylesheet" href="../assets/css/index.css">
+</head>
+<body>
+<h3 class="clearfix page-title">
+    <span>vue常用基础</span>
+    <a class="next" href="index2.html">下一篇：进阶版</a>
+</h3>
+<div class="example-box clearfix" id="app">
+    <div class="step">
+        <p>初始化：</p>
+        <p>
+            <img src="../assets/img/one/one001.png">
+        </p>
+        <p>{{name}}</p>
+    </div>
+    <div class="step">
+        <p>绑定属性：</p>
+        <p>
+            <img src="../assets/img/one/002.png">
+        </p>
+        <a href="/test" v-bind:title="aTitle">最新的报告已经发布</a><br>
+        <a href="/test" :title="aTitle">最新的报告已经发布</a>
+        <p>绑定属性时无需{{}}，并且可以省略关键词以“:”作为标记</p>
+        <p>常用的属性：title,href,name,value,data-*,其他自定义</p>
+    </div>
+    <div class="step">
+        <p>列表循环：</p>
+        <ul>
+           <li v-for="u in users">{{u.name}}</li>
+        </ul>
+        <p>
+            <img src="../assets/img/one/003.png">
+            <img src="../assets/img/one/004.png">
+        </p>
+        <p>与angular的repeat循环相对应，Vue采用了for，显得更加简洁清晰直白</p>
+        <p>值得<b>注意</b>的是，在控制台中我们执行语句“vm.users.push({id:5,name:'资管家'})”页面会自动增加一行</p>
+        <p>建议尽可能在使用 v-for 时提供 key，除非遍历输出的 DOM 内容非常简单，或者是刻意依赖默认行为以获取性能上的提升。</p>
+    </div>
+    <div class="step">
+        <p>条件渲染：</p>
+        <ul>
+            <li v-for="u in users" v-if="u.id>2">{{"id：" + u.id + u.name}}</li>
+        </ul>
+        <p><img src="../assets/img/one/006.png"></p>
+        <p>在v-if紧接着的dom节点可以追加一个v-else判断，二者中间不可有其它节点</p>
+        <h4 v-if="users.length>4">users长度大于4</h4>
+        <h4 v-else>users长度小于等于4</h4>
+        <p><img src="../assets/img/one/007.png"></p>
+        <p>此外，v-else-if，顾名思义，充当 v-if 的“else-if 块”，可以连续使用：</p>
+        <p><img src="../assets/img/one/008.png"></p>
+        <p>当然，我们也可以使用多个v-if来进行判断</p>
+        <p>v-show用法更为简单</p>
+    </div>
+
+    <div class="step">
+        <p>v-for循环一个对象的属性</p>
+        <p><img src="../assets/img/one/009.png"></p>
+        <ul>
+            <li v-for="p of object">{{p}}</li>
+        </ul>
+        <p><img src="../assets/img/one/010.png"></p>
+        <p>在v-for中也可以用of代替in作为分隔符</p>
+    </div>
+    <div class="step">
+        <p>v-for中的参数设置</p>
+        <p><b>普通写法</b>，v-for="value in arr"，value即表示属性值的或数组元素</p>
+        <p><b>带参数写法</b>，v-for="(value,key) in arr",第二个参数表示(1)对象键名(2)数组元素索引</p>
+        <ul>
+            <li v-for="(v,key) in users">{{key}}: {{v}}</li>
+        </ul>
+        <ul>
+            <li v-for="(v,key) in object">{{key}}: {{v}}</li>
+        </ul>
+
+        <p><b>带参数写法</b>，v-for="(value,key,index) in arr"第三个参数表示对象中key的索引，数组不处理index参数</p>
+        <ul>
+            <li v-for="(v,key,i) in users" :key="v.id">{{key}}: {{v}}， {{i}}</li>
+        </ul>
+        <ul>
+            <li v-for="(v,key,i) in object">{{key}}: {{v}}， {{i}}</li>
+        </ul>
+    </div>
+    <div class="step">
+        <p>数组操作中注意：</p>
+        <p>当使用filter(), concat() 和 slice()等操作时，不会触发页面dom的刷新，因为原数组并未发生改变，但总是返回一个新数组，我们可以用新数组替换旧数组来实现dom的渲染</p>
+        <p>由于 JavaScript 的限制，Vue <b>不能检测以下变动的数组</b>：</p>
+        <div>当你利用索引直接设置一个项时，例如：vm.items[indexOfItem] = newValue</div>
+        <p>当你修改数组的长度时，例如：vm.items.length = newLength</p>
+        <p><b>为了解决第一类问题</b>，以下两种方式都可以实现和 vm.items[indexOfItem] = newValue 相同的效果，同时也将触发状态更新：</p>
+<pre>
+Vue.set(vm.items, indexOfItem, newValue)
+vm.items.splice(indexOfItem, 1, newValue)
+</pre>
+    </div>
+    <div class="step">
+        <p>响应式数据：</p>
+        <p>在new Vue时绑定到data的数据才会被跟踪，但是后期想要添加新的响应式数据可以使用Vue.set()</p>
+        <p>例如：Vue.set(vm.object, 'money', 100)</p>
+        <p>则显示：{{object.money}}</p>
+        <p>vue提供了对象合并的方法Object.assign();该方法将返回新的对象，当我们需要为对象设置多个响应式属性时：</p>
+<pre>
+vm.chen = Object.assign({}, vm.chen, {age: 24, face: '大'})
+注意：assign中{}作为第一参数
+</pre>
+        <p>chen.name: {{chen.name}}</p>
+        <p>chen.age: {{chen.age}}</p>
+        <p>chen.face: {{chen.face}}</p>
+    </div>
+    <div class="step">
+        <p>显示过滤/排序结果</p>
+        <p>（1）利用计算属性，将数据过滤好之后再</p>
+        <ul>
+            <li v-for="n in evenNumbers">{{n}}</li>
+        </ul>
+        <p>
+            <img src="../assets/img/one/012.png" alt="">
+            <img src="../assets/img/one/011.png" alt="">
+        </p>
+        <p>（2）在计算属性不适用的情况下 (例如，在嵌套 v-for 循环中) 你可以使用一个 method 方法：</p>
+        <ul>
+            <li v-for="n in even(numbers)">{{n}}</li>
+        </ul>
+        <p>
+            <img src="../assets/img/one/014.png" alt="">
+            <img src="../assets/img/one/013.png" alt="">
+        </p>
+    </div>
+    <div class="step">
+        <p>常规过滤器：</p>
+        <p>{{object.firstName | nameUp}}</p>
+        <pre>{object.firstName | nameUp}</pre>
+        <p>过滤器也可以串联使用如：{object.firstName | nameUp | nameLo}</p>
+        <p>{{object.firstName | nameUp | nameLo}}</p>
+        <p>过滤器是 JavaScript 函数，因此可以接收参数：</p>
+        <pre>{ message | filterA('arg1', arg2) }</pre>
+        <p>其中 message 的值作为第一个参数，普通字符串 'arg1' 作为第二个参数，表达式 arg2 的值作为第三个参数</p>
+    </div>
+    <div class="step">
+        <p>事件处理中其他有效的方法：</p>
+        <p>事件修饰符</p>
+        <p>
+            <span>.stop</span>,
+            <span>.prevent</span>,
+            <span>.capture</span>,
+            <span>.self</span>,
+            <span>.once</span>,
+            <span>.passive</span>
+        </p>
+        详见：
+        <a href="https://cn.vuejs.org/v2/guide/events.html#事件修饰符" target="_blank">
+            Vue事件修饰符
+        </a>
+        <p>其次还有：按键修饰符，系统修饰符</p>
+    </div>
+    <div class="step">
+        <p>表单绑定：</p>
+        <input v-model="message" placeholder="edit me">
+        <p>Message is: {{ message }}</p>
+        <hr>
+        <p>单个复选框，绑定到布尔值：</p>
+        <input type="checkbox" id="checkbox" v-model="checked">
+        <label for="checkbox">{{ checked }}</label>
+        <pre id="checkbox-one">   </pre>
+        <hr>
+        <p>多个复选框，绑定到同一个数组：</p>
+        <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+        <label for="jack">Jack</label>
+        <input type="checkbox" id="john" value="John" v-model="checkedNames">
+        <label for="john">John</label>
+        <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+        <label for="mike">Mike</label>
+        <br>
+        <span>Checked names: {{ checkedNames }}</span>
+        <pre id="checkbox-two"></pre>
+        <hr>
+        <input type="radio" id="one" value="One" v-model="picked">
+        <label for="one">One</label>
+        <br>
+        <input type="radio" id="two" value="Two" v-model="picked">
+        <label for="two">Two</label>
+        <br>
+        <span>Picked: {{ picked }}</span>
+        <pre id="radio-one"></pre>
+        <hr>
+        <select v-model="selected">
+            <option disabled value="">请选择</option>
+            <option value="1">A</option>
+            <option value="2">B</option>
+            <option >C</option>
+        </select>
+        <span>Selected: {{ selected }}</span>
+        <hr>
+        <p>修饰符的使用：</p>
+        <input v-model.number="age" type="number">
+        <input v-model.trim="msg" type="text">
+        <p>v-model.number确保输入的是数值型</p>
+        <p>v-model.trim去除首尾的空格</p>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#checkbox-one").text('<input type="checkbox" id="checkbox" v-model="checked">')
+        $("#checkbox-two").text('' +
+            '<input type="checkbox" id="jack" value="Jack" v-model="checkedNames">\n' +
+            '<input type="checkbox" id="john" value="John" v-model="checkedNames">\n' +
+            '<input type="checkbox" id="mike" value="Mike" v-model="checkedNames">')
+        $("#radio-one").text('<input type="radio" id="one" value="One" v-model="picked">\n' +
+            '<input type="radio" id="two" value="Two" v-model="picked">')
+
+    });
+</script>
+
+<script>
+    var vm = new Vue({
+        el: '#app', // 托管于Vue的div
+        data: {     // 数据
+            name: "上海动永网络",
+            aTitle: '最新的报告已经发布',
+            users: [
+                {id: 1,name: '江容宇'},
+                {id: 2,name: '霍金莉'},
+                {id: 3,name: '顾小刚'},
+                {id: 4,name: '薛仁贵'}
+            ],
+            object: {
+                firstName: 'John',
+                lastName: 'Doe',
+                age: 30
+            },
+            chen: {
+                name: "陈宝俊"
+            },
+            numbers: [ 1, 2, 3, 4, 5 ],
+            checked: true,
+            message:'',
+            checkedNames:[],
+            picked: '',
+            selected: '',
+            age: '',
+            msg: ''
+        },
+        computed: { // 计算属性
+            evenNumbers: function () {
+                return this.numbers.filter(function (number) {
+                    return number % 2 === 0;
+                });
+            }
+        },
+        methods: { // 方法
+            even: function (numbers) {
+                return numbers.filter(function (number) {
+                    return number % 2 === 0
+                })
+            },
+            eventTest: function ($event) {
+                console.log($event);
+            }
+        },
+        filters: {
+            nameUp: function (value) {
+                if(!value){ return "";}
+                return value.toUpperCase();
+            },
+            nameLo: function (value) {
+                if(!value){ return "";}
+                return value.toLowerCase();
+            }
+        }
+    });
+    Vue.set(vm.object, 'money', 100);
+
+</script>
+</body>
+</html>
