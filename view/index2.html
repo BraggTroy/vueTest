@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Vue进阶版</title>
 
     <link rel="stylesheet" href="../assets/js/bootstrap/css/bootstrap.min.css">
@@ -81,9 +83,10 @@ Vue.component('alert-button', {
             <blog-post v-bind:post="post" v-on:up-text="postFontSize += 0.2"
                        v-on:down-text="postFontSize -= 0.2"></blog-post>
         </div>
+    </div>
 
-
-
+    <div class="step">
+        <p></p>
     </div>
 
 </div>
@@ -125,7 +128,7 @@ Vue.component('alert-button', {
         template: '<button :type="type" @click="showAlert(type)">{{ title }}{{id}}</button>',
         methods: {
             showAlert: function (type) {
-                alert(type)
+                alert(type);
             }
         }
     });
