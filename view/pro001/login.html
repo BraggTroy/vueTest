@@ -38,10 +38,10 @@
             <p v-for="p in people">{{p}}</p>
         </div>
         <div class="col-xs-4">
-            <p v-for="p in people ">{{p}}</p>
+            <p v-for="p in pfilter(people) ">{{p}}</p>
         </div>
         <div class="col-xs-4">
-            <p v-for="p in people">{{p}}</p>
+            <p v-for="p in people">{{p | pfilter}}</p>
         </div>
     </div>
 </div>
@@ -95,11 +95,65 @@
                 console.log(this.user);
 
                 return false;
+            },
+            pfilter: function (arr) {
+                if(Object.prototype.toString.call(arr).match("Array")){
+                    return arr.filter(function (t) {
+                        return t.indexOf("a") >= 0;
+                    })
+                }
+                return [];
+            },
+            ajaxs: function () {
+                let a, b, c;
+
+                function fna() {
+                    return new Promise(function (resolve, reject) {
+                        // 异步操作
+                        setTimeout(function () {
+                            a = 5;
+                            resolve(a);
+                        },100);
+                    });
+                }
+                function fnb(data) {
+                    return new Promise((resolve, reject) => {
+                        // 异步操作
+                        setTimeout(function () {
+                            b = 8;
+                            console.log(data);
+                            resolve(b);
+                        },100);
+                    });
+                }
+                function fnc(data) {
+                    return new Promise(function (resolve, reject) {
+                        // 异步操作
+                        setTimeout(function () {
+                            c = 3;
+                            console.log(data);
+                            resolve(c);
+                        },100);
+                    });
+                }
+
+                fna().then(function (data) {
+                    return fnb(data)
+                }).then(function (data) {
+                    return fnc(data)
+                }).then(function(data){
+                    console.log(data);
+                });
+
             }
         },
-        filter: {
+        filters: {
             pfilter: function (item) {
-                return item
+                if(item.indexOf("a") >= 0){
+                    return item;
+                }else{
+                    return null;
+                }
             }
         },
         beforeCreate: function () {
