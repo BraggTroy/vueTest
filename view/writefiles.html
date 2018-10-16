@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        JavaScript 写入文件
+    </title>
+
+    <link rel="stylesheet" href="../assets/js/bootstrap/css/bootstrap.min.css">
+    <script src="../assets/js/jquery-3.2.1.js"></script>
+    <script src="../assets/js/bootstrap/js/bootstrap.js"></script>
+
+
+    <script src="../assets/js/writefiles.js"></script>
+
+</head>
+<body>
+
+<ul class="list-group">
+    <li class="list-group-item">
+        <label>
+            <input type="checkbox" value="LOG"> console.log();
+        </label>
+    </li>
+    <li class="list-group-item">
+        <label>
+            <input type="checkbox" value="AT"> alert();
+        </label>
+    </li>
+    <li class="list-group-item">
+        <label>
+            <input type="checkbox" value="INFO"> console.info();
+        </label>
+    </li>
+</ul>
+
+<div class="form-group">
+    <label>文件名称：</label>
+    <input type="text" class="form-control" id="fileName" value="default" placeholder="默认后缀为：.js">
+</div>
+
+<button type="button" class="btn btn-primary" onclick="save();">保存并生成文件</button>
+
+<script>
+
+    var fn_config = {
+        LOG: "console.log('console.log(陈宝俊)');",
+        AT: "alert('陈');",
+        INFO: "console.info('console.info(陈宝俊)');"
+    };
+
+    function getChosen() {
+        var fn = "";
+        $(".list-group input:checked").map(function (i, t) {
+            fn += fn_config[$(t).val()] + '\n';
+        });
+        return fn;
+    }
+
+    function save() {
+        var val = getChosen();
+        doSave(val, "application/json", $("#fileName").val()+".js");
+    }
+
+</script>
+</body>
+</html>
