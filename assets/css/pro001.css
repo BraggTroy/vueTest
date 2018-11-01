@@ -1,0 +1,17 @@
+
+.header{ background: #222;}
+.footer{ background: #333; color: #ccc; padding: 20px; margin-top: 50px;}
+.footer.fixed-bottom{position: fixed; width: 100%; left: 0;bottom: 0;}
+
+
+
+
+
+/*login*/
+.login-form{margin: 100px 0;}
+.login-form .btn-primary{width: 100px;}
+
+
+
+
+
